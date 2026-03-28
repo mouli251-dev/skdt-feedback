@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>Trip Feedback</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#F0F7FF;--card:#fff;--blue:#1565C0;--blue2:#2196F3;
+  --orange:#F97316;--green:#16A34A;--txt:#1E293B;--txt2:#64748B;
+  --bdr:#DBEAFE;--shadow:0 4px 24px #1565C018;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;padding:0 0 60px;}
+
+/* ── HEADER ── */
+.hdr{background:linear-gradient(135deg,#1565C0,#1976D2,#2196F3);padding:22px 20px 50px;text-align:center;position:relative;overflow:hidden;}
+.hdr::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+.hdr-logo{font-size:48px;margin-bottom:6px;position:relative;}
+.hdr-title{font-size:22px;font-weight:900;color:#fff;position:relative;}
+.hdr-sub{font-size:13px;color:#ffffff99;position:relative;margin-top:4px;}
+
+/* ── TRIP CARD ── */
+.trip-card{background:var(--card);border-radius:20px;margin:−20px 16px 0;box-shadow:var(--shadow);padding:18px;position:relative;top:-26px;border:1px solid var(--bdr);}
+.trip-route{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.trip-city{font-size:17px;font-weight:900;color:var(--txt);}
+.trip-arrow{color:var(--orange);font-size:20px;flex-shrink:0;}
+.trip-meta{display:flex;flex-wrap:wrap;gap:6px;}
+.trip-pill{background:#F0F7FF;border:1px solid var(--bdr);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--blue);}
+.greeting{font-size:14px;color:var(--txt2);margin-top:10px;line-height:1.5;}
+
+/* ── MAIN CONTENT ── */
+.content{padding:0 16px;}
+
+/* ── ASPECT CARD ── */
+.aspect-card{background:var(--card);border-radius:18px;border:1.5px solid var(--bdr);padding:18px 16px;margin-bottom:12px;box-shadow:0 2px 12px #1565C010;transition:border-color .2s,box-shadow .2s;}
+.aspect-card.rated{border-color:#1565C055;box-shadow:0 2px 16px #1565C020;}
+.aspect-lbl{font-size:14px;font-weight:800;color:var(--txt);margin-bottom:12px;}
+.emoji-row{display:flex;justify-content:space-between;gap:4px;}
+.emoji-btn{flex:1;text-align:center;padding:8px 2px 6px;border-radius:12px;border:2px solid transparent;background:#F8FBFF;cursor:pointer;transition:all .15s;-webkit-user-select:none;user-select:none;}
+.emoji-btn .em{font-size:26px;display:block;transition:transform .15s;}
+.emoji-btn .lbl{font-size:9px;font-weight:700;color:var(--txt2);margin-top:3px;display:block;line-height:1.2;}
+.emoji-btn.sel{background:#EFF6FF;border-color:var(--blue);}
+.emoji-btn.sel .em{transform:scale(1.2);}
+.emoji-btn.sel .lbl{color:var(--blue);}
+.emoji-btn:active{transform:scale(.93);}
+
+/* ── COMMENT ── */
+.comment-card{background:var(--card);border-radius:18px;border:1.5px solid var(--bdr);padding:18px 16px;margin-bottom:16px;box-shadow:0 2px 12px #1565C010;}
+.comment-card label{font-size:14px;font-weight:800;color:var(--txt);display:block;margin-bottom:10px;}
+.comment-card textarea{width:100%;background:#F8FBFF;border:1.5px solid var(--bdr);border-radius:12px;padding:12px 14px;font-size:14px;font-family:'Nunito',sans-serif;color:var(--txt);outline:none;resize:none;min-height:90px;transition:border-color .2s;}
+.comment-card textarea:focus{border-color:var(--orange);}
+
+/* ── SUBMIT ── */
+.submit-btn{width:100%;padding:16px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--orange),#EA580C);color:#fff;font-size:17px;font-weight:900;font-family:'Nunito',sans-serif;cursor:pointer;box-shadow:0 4px 18px #F9731640;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.submit-btn:active{transform:scale(.97);box-shadow:0 2px 8px #F9731640;}
+.submit-btn:disabled{background:#94A3B8;box-shadow:none;cursor:not-allowed;}
+
+/* ── PROGRESS ── */
+.progress-bar{height:5px;background:#E2EEFF;border-radius:4px;margin-bottom:16px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--blue2));border-radius:4px;transition:width .4s cubic-bezier(.4,0,.2,1);}
+.progress-lbl{font-size:11px;font-weight:700;color:var(--txt2);text-align:right;margin-bottom:6px;}
+
+/* ── SUCCESS ── */
+.success{display:none;text-align:center;padding:40px 20px;}
+.success-icon{font-size:72px;margin-bottom:16px;animation:pop .5s cubic-bezier(.175,.885,.32,1.275);}
+.success-title{font-size:24px;font-weight:900;color:var(--txt);margin-bottom:8px;}
+.success-sub{font-size:14px;color:var(--txt2);line-height:1.6;}
+@keyframes pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:60px 20px;}
+.spinner{width:40px;height:40px;border:4px solid var(--bdr);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── ERROR ── */
+.error-box{background:#FEF2F2;border:1.5px solid #FECACA;border-radius:16px;padding:20px;text-align:center;margin:20px 16px;}
+.error-box p{color:#DC2626;font-size:14px;font-weight:700;}
+
+/* ── ALREADY DONE ── */
+.done-box{background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:16px;padding:24px;text-align:center;margin:0 16px;}
+.done-box .di{font-size:48px;margin-bottom:10px;}
+.done-box p{color:var(--green);font-size:15px;font-weight:800;}
+.done-box small{color:#64748B;font-size:12px;margin-top:6px;display:block;}
+</style>
+</head>
+<body>
+
+<div id="loading" class="loading">
+  <div class="spinner"></div>
+  <p style="color:#64748B;font-size:14px;font-weight:700">Loading your trip details...</p>
+</div>
+
+<div id="main" style="display:none">
+  <div class="hdr">
+    <div class="hdr-logo">⭐</div>
+    <div class="hdr-title">How was your trip?</div>
+    <div class="hdr-sub" id="biz-name">TripTracker</div>
+  </div>
+
+  <div style="padding:0 16px">
+    <div class="trip-card" id="trip-card"></div>
+  </div>
+
+  <div class="content">
+    <div class="progress-lbl" id="prog-lbl">0 of 6 rated</div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+
+    <div id="aspects"></div>
+
+    <div class="comment-card">
+      <label>💬 Any comments or suggestions? <span style="font-weight:400;color:#94A3B8">(Optional)</span></label>
+      <textarea id="comment" placeholder="Tell us about your experience — any compliments, suggestions, or complaints are welcome!"></textarea>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitFeedback()">
+      <span>⭐</span> Submit Feedback
+    </button>
+    <p style="text-align:center;font-size:11px;color:#94A3B8;margin-top:10px;padding-bottom:20px">Your feedback is private and goes directly to the business</p>
+  </div>
+</div>
+
+<div id="success" class="success" style="display:none">
+  <div class="success-icon">🙏</div>
+  <div class="success-title">Thank you!</div>
+  <div class="success-sub" id="success-msg">Your feedback has been submitted.<br/>We truly appreciate you taking the time!</div>
+</div>
+
+<div id="already-done" style="display:none;padding:40px 0 0">
+  <div style="text-align:center;padding:0 0 20px">
+    <div class="hdr-logo" style="font-size:40px">⭐</div>
+  </div>
+  <div class="done-box">
+    <div class="di">✅</div>
+    <p>Feedback Already Submitted</p>
+    <small>You've already shared your feedback for this trip. Thank you!</small>
+  </div>
+</div>
+
+<div id="error-view" style="display:none;padding:60px 0 0">
+  <div class="error-box">
+    <p id="error-msg">Something went wrong. Please try again.</p>
+  </div>
+</div>
+
+<script>
+const ASPECTS = [
+  {key:'overall',    label:'🚗 Overall Experience',  emojis:['😞','😕','😐','😊','🤩'], labels:['Poor','Fair','OK','Good','Excellent']},
+  {key:'driver',     label:'🧑‍✈️ Driver Behaviour',    emojis:['😡','😟','😐','🙂','😍'], labels:['Rude','Fair','OK','Friendly','Excellent']},
+  {key:'vehicle',    label:'✨ Vehicle Cleanliness',  emojis:['🤢','😟','😐','😄','😱'], labels:['Dirty','Fair','OK','Clean','Spotless']},
+  {key:'punctuality',label:'⏰ Punctuality',          emojis:['😠','😤','😐','🙂','⏰'], labels:['Very Late','Late','OK','On Time','Perfect']},
+  {key:'value',      label:'💰 Value for Money',      emojis:['😟','😕','😐','😊','🤑'], labels:['Pricey','Fair','OK','Good','Great Value']},
+  {key:'comfort',    label:'🛣️ Comfort & Safety',     emojis:['😨','😟','😐','😄','😎'], labels:['Uncomfortable','Fair','OK','Comfy','Excellent']},
+];
+
+const ratings = {};
+let tripData = null;
+let tripId = null;
+let dbUrl = null;
+
+// ── Parse URL params ──
+const params = new URLSearchParams(window.location.search);
+dbUrl = params.get('db') ? decodeURIComponent(params.get('db')) : null;
+tripId = params.get('tid') || null;
+const bizName = params.get('biz') ? decodeURIComponent(params.get('biz')) : 'TripTracker';
+
+document.getElementById('biz-name').textContent = bizName;
+
+// ── Load trip + check if already submitted ──
+async function init() {
+  // No params = show demo mode (preview / direct open without WhatsApp link)
+  if (!dbUrl || !tripId) {
+    showDemoMode();
+    return;
+  }
+  try {
+    const r = await fetch(dbUrl + '/trips/' + tripId + '.json');
+    if (!r.ok) throw new Error('fetch failed');
+    tripData = await r.json();
+    if (!tripData) throw new Error('trip not found');
+
+    // Already has feedback?
+    if (tripData.feedback && tripData.feedback.overall) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('already-done').style.display = 'block';
+      return;
+    }
+
+    renderTrip();
+    renderAspects();
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+  } catch(e) {
+    showError('Could not load trip details. The link may have expired.<br/>Please ask the business to send a new feedback link.');
+  }
+}
+
+function showDemoMode() {
+  // Fill with sample trip data for preview
+  tripData = {
+    id: 'demo',
+    customerName: 'Rahul Kumar',
+    from: 'Vijayawada', to: 'Hyderabad',
+    date: new Date().toISOString().slice(0,10),
+    vehicleType: 'Innova (7-Seater)',
+    driverName: 'Ravi Kumar',
+    tripType: 'One-Way'
+  };
+  renderTrip();
+  renderAspects();
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('main').style.display = 'block';
+  // Add demo banner
+  const banner = document.createElement('div');
+  banner.style.cssText = 'background:#FEF3C7;border:1.5px solid #F59E0B;border-radius:12px;padding:10px 14px;margin:0 16px 14px;font-size:12px;font-weight:700;color:#92400E;display:flex;align-items:center;gap:8px;';
+  banner.innerHTML = '<span style="font-size:16px">👁️</span><span>Preview mode — this is how customers will see their feedback form</span>';
+  document.querySelector('.content').insertBefore(banner, document.querySelector('.content').firstChild);
+}
+
+function renderTrip() {
+  const t = tripData;
+  const date = t.date ? new Date(t.date).toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) : '';
+  document.getElementById('trip-card').innerHTML =
+    '<div class="trip-route">'
+      + '<span class="trip-city">' + esc(t.from||'') + '</span>'
+      + '<span class="trip-arrow">→</span>'
+      + '<span class="trip-city">' + esc(t.to||'') + '</span>'
+    + '</div>'
+    + '<div class="trip-meta">'
+      + (date ? '<span class="trip-pill">📅 ' + date + '</span>' : '')
+      + (t.vehicleType ? '<span class="trip-pill">🚗 ' + esc(t.vehicleType) + '</span>' : '')
+      + (t.driverName ? '<span class="trip-pill">🧑‍✈️ ' + esc(t.driverName) + '</span>' : '')
+      + (t.tripType ? '<span class="trip-pill">' + esc(t.tripType) + '</span>' : '')
+    + '</div>'
+    + '<div class="greeting">Dear <strong>' + esc(t.customerName||'Customer') + '</strong>, thank you for travelling with us! Your honest feedback helps us serve you better. 🙏</div>';
+}
+
+function renderAspects() {
+  const box = document.getElementById('aspects');
+  box.innerHTML = ASPECTS.map(a =>
+    '<div class="aspect-card" id="ac-' + a.key + '">'
+      + '<div class="aspect-lbl">' + a.label + '</div>'
+      + '<div class="emoji-row">'
+        + a.emojis.map((em, i) =>
+          '<button class="emoji-btn" id="eb-' + a.key + '-' + (i+1) + '" onclick="rate(\'' + a.key + '\',' + (i+1) + ')">'
+            + '<span class="em">' + em + '</span>'
+            + '<span class="lbl">' + a.labels[i] + '</span>'
+          + '</button>'
+        ).join('')
+      + '</div>'
+    + '</div>'
+  ).join('');
+}
+
+function rate(key, val) {
+  ratings[key] = val;
+  // Update UI for this aspect
+  for (let i = 1; i <= 5; i++) {
+    const btn = document.getElementById('eb-' + key + '-' + i);
+    if (btn) btn.classList.toggle('sel', i === val);
+  }
+  const card = document.getElementById('ac-' + key);
+  if (card) card.classList.add('rated');
+  updateProgress();
+}
+
+function updateProgress() {
+  const count = Object.keys(ratings).length;
+  const pct = Math.round((count / ASPECTS.length) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-lbl').textContent = count + ' of ' + ASPECTS.length + ' rated';
+}
+
+async function submitFeedback() {
+  const count = Object.keys(ratings).length;
+  if (count < 1) {
+    alert('Please rate at least one aspect before submitting.');
+    return;
+  }
+  // Demo mode — no Firebase
+  if (!dbUrl || !tripId) {
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('success-msg').innerHTML = 'This is a <strong>preview</strong>. In the real form, customer feedback saves directly to your app via Firebase. 🎉';
+    document.getElementById('success').style.display = 'block';
+    return;
+  }
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span style="display:inline-block;width:20px;height:20px;border:3px solid #ffffff55;border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite"></span> Submitting...';
+
+  const fb = {
+    ...ratings,
+    comment: document.getElementById('comment').value.trim(),
+    savedAt: new Date().toISOString(),
+    source: 'customer_form'
+  };
+
+  try {
+    // PATCH only the feedback field of the trip
+    const r = await fetch(dbUrl + '/trips/' + tripId + '.json', {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({feedback: fb})
+    });
+    if (!r.ok) throw new Error('save failed');
+
+    // Show success
+    document.getElementById('main').style.display = 'none';
+    const successMsg = document.getElementById('success-msg');
+    const rated = Object.keys(ratings).length;
+    successMsg.innerHTML = 'Your feedback (' + rated + ' ratings) has been sent to <strong>' + esc(bizName) + '</strong>.<br/>We truly appreciate your time! 🌟';
+    document.getElementById('success').style.display = 'block';
+
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = '<span>⭐</span> Submit Feedback';
+    alert('Could not submit feedback. Please check your internet connection and try again.');
+  }
+}
+
+function showError(msg) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error-msg').innerHTML = msg;
+  document.getElementById('error-view').style.display = 'block';
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+init();
+</script>
+</body>
+</html>
